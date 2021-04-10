@@ -23,7 +23,7 @@ class Auth with ChangeNotifier{
     } 
   }
   Future<void> _auth(String email,String password, String logOrSign) async{
-    final endPoint = "https://identitytoolkit.googleapis.com/v1/accounts:$logOrSign?key=AIzaSyCa2mPEg23ptNS7AWob5gpQNzFJRnZ-090";
+    final endPoint = "https://identitytoolkit.googleapis.com/v1/accounts:$logOrSign?key=[your_api_key_here]";
     try{
 
       final response = await http.post(endPoint,body: json.encode({
