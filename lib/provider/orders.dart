@@ -1,6 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_shop/models/cartModel.dart';
 import 'package:flutter_shop/provider/cart.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class OrdersItem {
   final String id;
@@ -15,15 +17,69 @@ class Orders with ChangeNotifier {
   List<OrdersItem> get ordersGet {
     return [...orders];
   }
+  final String currentUserToken;
+  Orders(this.currentUserToken,this.orders);
 
-  void addOrder(List<CartModel> cartItems, double totalAmount) {
-    orders.insert(
+  Future<void> fetchOrders() async{
+    final firebaseUrl = "https://shopping-613a0-default-rtdb.firebaseio.com/orders.json?auth=$currentUserToken";
+    final response = await http.get(firebaseUrl);
+    List<OrdersItem> fetchedOrders = [];
+    print("fetching orders");
+    print(response.body);
+    //print(response.body);
+    final responseOrderItems = json.decode(response.body) as Map<String,dynamic>;
+    if(responseOrderItems == null){
+      return;
+    }
+      responseOrderItems.forEach((id, value) {
+
+        fetchedOrders.insert(0,OrdersItem(
+          id: id,
+          total:value["amount"],
+          orderedItems: (value["Items"] as List<dynamic>).map((e){
+            return CartModel(id: e["id"], title: e["title"], price: e["price"]);
+          }),
+          orderedTime: value["dateAndTime"],
+          
+        ));
+
+        
+       });
+
+    
+
+    
+    
+  }
+
+
+
+
+  void addOrder(List<CartModel> cartItems, double totalAmount) async{  //use Future<void> if you need to return a future.
+    final firebaseUrl = "https://shopping-613a0-default-rtdb.firebaseio.com/orders.json?auth=$currentUserToken";
+    final orderTimeDate = DateTime.now();
+    
+    final response = await http.post(firebaseUrl,body: json.encode({ 
+      "dateAndTime":orderTimeDate.toIso8601String(),
+      "amount":totalAmount,
+      "Items": cartItems.map((e) => {
+        "id":e.id,
+        "title":e.title,
+        "quantitiy":e.quantity,
+        "price":e.price,
+      }).toList(),  //cannot directly post the products.convert it into a list of items
+    }));
+    print("order_response");
+    print(response.body);
+    
+
+    orders.insert(  //use the response id as the id for the order
       0,
       OrdersItem(
-          id: DateTime.now().toString(),
+          id: json.decode(response.body)["name"],
           total: totalAmount,
           orderedItems: cartItems,
-          orderedTime: DateTime.now()),
+          orderedTime: orderTimeDate),
     );
     notifyListeners();
   }

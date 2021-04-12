@@ -22,12 +22,32 @@ class _OrdersScreenState extends State<OrdersScreen> {
         backgroundColor: Colors.greenAccent.shade200,
         title: Text("Orders"),
       ),
-      body: ListView.builder(
-        itemCount: ordersProvider.orders.length,
-        itemBuilder: (context, index) {
-          return OrdersScreenItemBuilder(ordersProvider.orders[index]);
-        },
-      ),
-    );
+      body: FutureBuilder(
+        future: Provider.of<Orders>(context).fetchOrders(),
+        builder: (context,snapshot){ //FutureBuilder takes a snapshot after the future returns a value and rebuilds the widget with that snapshot
+     if(snapshot.connectionState == ConnectionState.waiting){
+            return CircularProgressIndicator();
+          }
+          else{
+            if (snapshot.error != null) {
+              return Center(
+                child: Text('An error occurred!'),
+              );
+ } 
+            
+            return Consumer<Orders>(builder: (context,order,widget){
+              
+             return ListView.builder(itemBuilder: (context,item){
+               print("orders building");
+               return OrdersScreenItemBuilder(order.orders[item]);
+              },
+              itemCount: order.orders.length,);
+            },);
+          }
+          
+
+      },
+      
+    ),);
   }
 }

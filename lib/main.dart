@@ -38,14 +38,16 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProxyProvider<Auth,Products>(
           create: null,
          update: (context,auth,productLast){
-           return Products(auth.token,productLast.items);
+           return Products(auth.token,productLast == null ? []: productLast.items); //productLast will be null the first time
          },
         ),
         ChangeNotifierProvider(
+
           create: (context) => Cart(),
         ),
-        ChangeNotifierProvider(
-          create: (context) => Orders(),
+        ChangeNotifierProxyProvider<Auth,Orders>(
+          create: null,
+          update: (context,auth,orderLast) => Orders(auth.token,orderLast == null?[]:orderLast.orders),
         ),
       ],
       child: Consumer<Auth>(builder: (ctx,auth,_) => MaterialApp( //basically each time auth is changed the materialApp has to be rebuit.
