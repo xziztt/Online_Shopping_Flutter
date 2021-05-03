@@ -23,7 +23,7 @@ class Auth with ChangeNotifier{
     } 
   }
   Future<void> _auth(String email,String password, String logOrSign) async{
-    final endPoint = "https://identitytoolkit.googleapis.com/v1/accounts:$logOrSign?key=[your_api_key_here]";
+    final endPoint = "https://identitytoolkit.googleapis.com/v1/accounts:$logOrSign?key=AIzaSyCa2mPEg23ptNS7AWob5gpQNzFJRnZ-090";
     try{
 
       final response = await http.post(endPoint,body: json.encode({
@@ -33,6 +33,7 @@ class Auth with ChangeNotifier{
       'returnSecureToken':true,
 
     }));
+    print(response.body);
        if(json.decode(response.body)['error'] != null){ //firebase returns a json with an error in it and not an error code
 
       throw HttpException(json.decode(response.body)['error']['message']);

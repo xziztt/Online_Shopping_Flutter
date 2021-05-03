@@ -19,34 +19,37 @@ class Orders with ChangeNotifier {
   }
   final String currentUserToken;
   Orders(this.currentUserToken,this.orders);
-
+  List<OrdersItem> fetchedOrders = [];
   Future<void> fetchOrders() async{
     final firebaseUrl = "https://shopping-613a0-default-rtdb.firebaseio.com/orders.json?auth=$currentUserToken";
     final response = await http.get(firebaseUrl);
-    List<OrdersItem> fetchedOrders = [];
-    print("fetching orders");
-    print(response.body);
+    
     //print(response.body);
     final responseOrderItems = json.decode(response.body) as Map<String,dynamic>;
     if(responseOrderItems == null){
       return;
     }
       responseOrderItems.forEach((id, value) {
+         print(fetchedOrders);
 
+        
+        print(value["Items"][0]["id"]);
         fetchedOrders.insert(0,OrdersItem(
           id: id,
           total:value["amount"],
           orderedItems: (value["Items"] as List<dynamic>).map((e){
-            return CartModel(id: e["id"], title: e["title"], price: e["price"]);
-          }),
-          orderedTime: value["dateAndTime"],
+            return CartModel(id: e["id"].toString(), title: e["title"], price: e["price"],quantity: e["quantitiy"]);
+          }).toList(),
+          orderedTime: DateTime.parse(value["dateAndTime"]),
           
         ));
+       
 
         
        });
 
-    
+
+        
 
     
     

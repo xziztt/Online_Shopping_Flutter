@@ -31,21 +31,22 @@ class _OrdersScreenState extends State<OrdersScreen> {
           else{
             if (snapshot.error != null) {
               return Center(
-                child: Text('An error occurred!'),
+                child: Text(snapshot.error.toString()),
               );
- } 
+ }         
             
             return Consumer<Orders>(builder: (context,order,widget){
-              
+              print("here");
+              print(ordersProvider.fetchedOrders);
              return ListView.builder(itemBuilder: (context,item){
                print("orders building");
-               return OrdersScreenItemBuilder(order.orders[item]);
+               return OrdersScreenItemBuilder(ordersProvider.fetchedOrders[item]);
               },
-              itemCount: order.orders.length,);
+              itemCount: ordersProvider.fetchedOrders.length,);
             },);
           }
           
-
+        
       },
       
     ),);

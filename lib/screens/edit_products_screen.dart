@@ -100,9 +100,11 @@ class _EditProductScreenState extends State<EditProductScreen> {
           .updateItem(_editedProduct.id, _editedProduct);
     } else {
       try {
+        print("goign to add new product");
         await Provider.of<Products>(context, listen: false)
             .addNewProduct(_editedProduct);
       } catch (error) {
+        print(error);
         print("an error occured");
         await showDialog<Null>(
             context: context,

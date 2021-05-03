@@ -153,8 +153,9 @@ class Products with ChangeNotifier {
   }
 
   Future<void> addNewProduct(Product product) async {
+    print(product);
     final firebaseUrl =
-        "https://shopping-613a0-defaulwt-rtdb.firebaseio.com/products.json?auth=$currentUserToken";
+        "https://shopping-613a0-default-rtdb.firebaseio.com/products.json?auth=$currentUserToken";
     try {
       final response = await http.post(firebaseUrl,
           body: json.encode({
