@@ -24,8 +24,7 @@ class AuthScreen extends StatelessWidget {
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                  Color.fromRGBO(215, 117, 255, 1).withOpacity(0.5),
-                  Color.fromRGBO(255, 188, 117, 1).withOpacity(0.9),
+                  Colors.greenAccent,Colors.white
                 ],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
@@ -41,7 +40,8 @@ class AuthScreen extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
-                  Flexible(
+                  Container(child: Text("SHOP",style: TextStyle(fontSize: 100,fontFamily: 'Staatliches',color: Colors.black),),),
+                 /* Flexible(
                     child: Container(
                       margin: EdgeInsets.only(bottom: 20.0),
                       padding:
@@ -51,26 +51,26 @@ class AuthScreen extends StatelessWidget {
                       // ..translate(-10.0),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(20),
-                        color: Colors.white ,
+                        color: Colors.white,
                         boxShadow: [
                           BoxShadow(
                             blurRadius: 8,
-                            color: Colors.black26,
+                            color: Colors.black,
                             offset: Offset(0, 2),
                           )
                         ],
                       ),
                       child: Text(
-                        'Shop',
+                        'The Shop',
                         style: TextStyle(
                           color: Colors.black,
                           fontSize: 50,
-                          fontFamily: 'Anton',
+                          fontFamily: 'Staatliches',
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
-                  ),
+                  ),*/
                   Flexible(
                     flex: deviceSize.width > 600 ? 2 : 1,
                     child: AuthCard(),
