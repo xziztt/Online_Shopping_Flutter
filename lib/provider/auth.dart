@@ -1,13 +1,17 @@
+import 'dart:ui';
+
 import 'package:flutter/widgets.dart';
 import 'package:flutter_shop/exceptions/exceptions.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'dart:async';
 
 
 class Auth with ChangeNotifier{
   String token; //token will expire after a while
   DateTime expiry;  
   String userId;
+  Timer _logOutTimer;
 
   bool isAuthenticated(){
     if(tokenVal != null){
@@ -44,8 +48,9 @@ class Auth with ChangeNotifier{
        final responseFinal = json.decode(response.body);
        token = responseFinal['idToken'];
        userId = responseFinal['localId'];
-       expiry = DateTime.now().add(Duration(seconds: int.parse(responseFinal['expiresIn'],),),); //firebase returns the seconds in which token expires
-       notifyListeners();                                                                        //add the expiresIn to the current Time to get the expiry date.
+       expiry = DateTime.now().add(Duration(seconds: int.parse(responseFinal['expiresIn'],),),); //firebase returns the seconds in which token expires //add the expiresIn to the current Time to get the expiry date
+       _logoutTimer();  
+       notifyListeners();                                                                     
        print(json.decode(response.body));
     }   
     catch(error){
@@ -56,6 +61,7 @@ class Auth with ChangeNotifier{
   }
 
   void logout(){
+    print("calling logout");
     token = null;
     expiry = null;
     userId = null;
@@ -63,6 +69,9 @@ class Auth with ChangeNotifier{
   }
 
   void _logoutTimer(){
+    final timeLeft = expiry.difference(DateTime.now()).inSeconds;
+    print(timeLeft);
+    _logOutTimer = Timer(Duration(seconds: timeLeft),logout);
   }
   Future<void> signUp(String email,String password) async{
     return _auth(email,password,"signUp");

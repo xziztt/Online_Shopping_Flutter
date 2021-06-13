@@ -47,6 +47,10 @@ class Orders with ChangeNotifier {
         )); 
        });
   }
+
+  void cancelOrder(List<CartModel> cartItems) async{
+    final firebaseUrl = Uri.parse("https://shopping-613a0-default-rtdb.firebaseio.com/orders/$userId.json?auth=$currentUserToken");
+  }
   
   void addOrder(List<CartModel> cartItems, double totalAmount) async{  //use Future<void> if you need to return a future.
     final firebaseUrl = Uri.parse("https://shopping-613a0-default-rtdb.firebaseio.com/orders/$userId.json?auth=$currentUserToken");
