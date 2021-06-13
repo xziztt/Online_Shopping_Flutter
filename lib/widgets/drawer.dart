@@ -3,7 +3,8 @@ import 'package:flutter_shop/screens/manage_products_screen.dart';
 import 'package:flutter_shop/screens/orders_screen.dart';
 import './drawer_tile_builder.dart';
 import '../screens/orders_screen.dart';
-
+import '../provider/auth.dart';
+import 'package:provider/provider.dart';
 import '../screens/overview.dart';
 
 class DrawerLeft extends StatelessWidget {
@@ -29,6 +30,13 @@ class DrawerLeft extends StatelessWidget {
             "Manage Products",
             () => Navigator.of(context)
                 .pushReplacementNamed(ManageProductsScreen.routeName),
+          ),
+           DrawerItemBuilder(
+            "Logout",
+            () => {
+              Navigator.of(context).pop(),
+              Provider.of<Auth>(context,listen: false).logout(),
+            },
           ),
         ],
       ),

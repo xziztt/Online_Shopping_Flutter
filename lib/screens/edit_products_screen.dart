@@ -25,12 +25,14 @@ class _EditProductScreenState extends State<EditProductScreen> {
     price: 0,
     description: '',
     imageUrl: '',
+    favorite: false,
   );
   var _initValues = {
     'title': '',
     'description': '',
     'price': '',
     'imageUrl': '',
+    'favorite': ''
   };
   var _isInit = true;
   var _isLoading = false;
@@ -54,6 +56,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
           'price': _editedProduct.price.toString(),
           // 'imageUrl': _editedProduct.imageUrl,
           'imageUrl': '',
+          'favorite': _editedProduct.favorite.toString(),
         };
         _imageUrlController.text = _editedProduct.imageUrl;
       }

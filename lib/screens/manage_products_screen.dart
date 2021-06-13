@@ -14,12 +14,10 @@ class ManageProductsScreen extends StatefulWidget {
 
 class _ManageProductsScreenState extends State<ManageProductsScreen> {
   Future<void> _refreshItems(BuildContext context) async {
-    await Provider.of<Products>(context, listen: false).fetchProducts();
-  }
-
+    await Provider.of<Products>(context, listen: false).fetchProducts(true);
+  } 
   @override
   Widget build(BuildContext context) {
-    final productDetails = Provider.of<Products>(context).items;
     return Scaffold(
       drawer: DrawerLeft(),
       appBar: AppBar(
@@ -33,14 +31,23 @@ class _ManageProductsScreenState extends State<ManageProductsScreen> {
           )
         ],
       ),
-      body: RefreshIndicator(
-        onRefresh: () => _refreshItems(context),
-        child: ListView.builder(
-          itemCount: productDetails.length,
-          itemBuilder: (context, index) {
-            return ManageProductItemBuilder(productDetails[index].id,
-                productDetails[index].title, productDetails[index].imageUrl);
-          },
+      body: FutureBuilder(
+        future: _refreshItems(context),
+        builder: (context,snapshot) => snapshot.connectionState == ConnectionState.waiting? Center(child: CircularProgressIndicator(),): RefreshIndicator(
+          onRefresh: () => _refreshItems(context),
+          child: Consumer<Products>(
+            builder: (context,productDetails,_) =>
+             Padding(
+               padding: const EdgeInsets.all(8.0),
+               child: ListView.builder(
+                itemCount: productDetails.items.length,
+                itemBuilder: (context, index) {
+                  return ManageProductItemBuilder(productDetails.items[index].id,
+                      productDetails.items[index].title, productDetails.items[index].imageUrl);
+                },
+            ),
+             ),
+          ),
         ),
       ),
     );

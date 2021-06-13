@@ -1,16 +1,18 @@
 import 'dart:math';
+import 'package:firebase_core/firebase_core.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_shop/exceptions/exceptions.dart';
 import 'package:provider/provider.dart';
 import '../provider/auth.dart';
 import 'package:flutter_shop/exceptions/exceptions.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 enum AuthMode { Signup, Login }
 
 class AuthScreen extends StatelessWidget {
   static const routeName = '/auth';
-
+  final Future<FirebaseApp> _firebaseInit = Firebase.initializeApp();
   @override
   Widget build(BuildContext context) {
     final deviceSize = MediaQuery.of(context).size;

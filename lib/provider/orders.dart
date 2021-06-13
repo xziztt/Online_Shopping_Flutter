@@ -18,10 +18,12 @@ class Orders with ChangeNotifier {
     return [...orders];
   }
   final String currentUserToken;
-  Orders(this.currentUserToken,this.orders);
+  final String userId;
+  Orders(this.currentUserToken,this.userId,this.orders);
   List<OrdersItem> fetchedOrders = [];
   Future<void> fetchOrders() async{
-    final firebaseUrl = "https://shopping-613a0-default-rtdb.firebaseio.com/orders.json?auth=$currentUserToken";
+    fetchedOrders = [];
+    final Uri firebaseUrl = Uri.parse("https://shopping-613a0-default-rtdb.firebaseio.com/orders/$userId.json?auth=$currentUserToken");
     final response = await http.get(firebaseUrl);
     
     //print(response.body);
@@ -38,28 +40,16 @@ class Orders with ChangeNotifier {
           id: id,
           total:value["amount"],
           orderedItems: (value["Items"] as List<dynamic>).map((e){
-            return CartModel(id: e["id"].toString(), title: e["title"], price: e["price"],quantity: e["quantitiy"]);
+            return CartModel(id: e["id"].toString(), title: e["title"], price: e["price"],quantity: e["quantity"]);
           }).toList(),
           orderedTime: DateTime.parse(value["dateAndTime"]),
           
-        ));
-       
-
-        
+        )); 
        });
-
-
-        
-
-    
-    
   }
-
-
-
-
+  
   void addOrder(List<CartModel> cartItems, double totalAmount) async{  //use Future<void> if you need to return a future.
-    final firebaseUrl = "https://shopping-613a0-default-rtdb.firebaseio.com/orders.json?auth=$currentUserToken";
+    final firebaseUrl = Uri.parse("https://shopping-613a0-default-rtdb.firebaseio.com/orders/$userId.json?auth=$currentUserToken");
     final orderTimeDate = DateTime.now();
     
     final response = await http.post(firebaseUrl,body: json.encode({ 
