@@ -26,7 +26,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
         future: Provider.of<Orders>(context).fetchOrders(),
         builder: (context,snapshot){ //FutureBuilder takes a snapshot after the future returns a value and rebuilds the widget with that snapshot
      if(snapshot.connectionState == ConnectionState.waiting){
-            return CircularProgressIndicator();
+            return Center(child: CircularProgressIndicator());
           }
           else{
             if (snapshot.error != null) {

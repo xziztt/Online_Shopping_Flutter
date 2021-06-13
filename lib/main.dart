@@ -31,42 +31,51 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(
-          create: (context)=>Auth(),
-        ),
-        ChangeNotifierProxyProvider<Auth,Products>(
-          create: null,
-         update: (context,auth,productLast){
-           return Products(auth.token,productLast == null ? []: productLast.items); //productLast will be null the first time
-         },
-        ),
-        ChangeNotifierProvider(
-
-          create: (context) => Cart(),
-        ),
-        ChangeNotifierProxyProvider<Auth,Orders>(
-          create: null,
-          update: (context,auth,orderLast) => Orders(auth.token,orderLast == null?[]:orderLast.orders),
-        ),
-      ],
-      child: Consumer<Auth>(builder: (ctx,auth,_) => MaterialApp( //basically each time auth is changed the materialApp has to be rebuit.
-        debugShowCheckedModeBanner: false,
-        title: 'MyShop',
-        theme: ThemeData(
-          fontFamily: 'Staatliches',
-          primarySwatch: Colors.lightGreen,
-          accentColor: Colors.green,
-        ),
-        home: auth.isAuthenticated()?Overview():AuthScreen(),
-        routes: {
-          ProductDetails.routeName: (context) => ProductDetails(),
-          CartScreen.routeName: (context) => CartScreen(),
-          OrdersScreen.routeName: (context) => OrdersScreen(),
-          ManageProductsScreen.routeName: (context) => ManageProductsScreen(),
-          EditProductScreen.routeName: (context) => EditProductScreen(),
-        },
-      ),) 
-    );
+        providers: [
+          ChangeNotifierProvider(
+            create: (context) => Auth(),
+          ),
+          ChangeNotifierProxyProvider<Auth, Products>(
+            create: null,
+            update: (context, auth, productLast) {
+              return Products(
+                  auth.token,
+                  auth.userId,
+                  productLast == null
+                      ? []
+                      : productLast
+                          .items); //productLast will be null the first time
+            },
+          ),
+          ChangeNotifierProvider(
+            create: (context) => Cart(),
+          ),
+          ChangeNotifierProxyProvider<Auth, Orders>(
+            create: null,
+            update: (context, auth, orderLast) =>
+                Orders(auth.token,auth.userId,orderLast == null ? [] : orderLast.orders),
+          ),
+        ],
+        child: Consumer<Auth>(
+          builder: (ctx, auth, _) => MaterialApp(
+            //basically each time auth is changed the materialApp has to be rebuit.
+            debugShowCheckedModeBanner: false,
+            title: 'MyShop',
+            theme: ThemeData(
+              fontFamily: 'Staatliches',
+              primarySwatch: Colors.lightGreen,
+              accentColor: Colors.green,
+            ),
+            home: auth.isAuthenticated() ? Overview() : AuthScreen(),
+            routes: {
+              ProductDetails.routeName: (context) => ProductDetails(),
+              CartScreen.routeName: (context) => CartScreen(),
+              OrdersScreen.routeName: (context) => OrdersScreen(),
+              ManageProductsScreen.routeName: (context) =>
+                  ManageProductsScreen(),
+              EditProductScreen.routeName: (context) => EditProductScreen(),
+            },
+          ),
+        ));
   }
 }

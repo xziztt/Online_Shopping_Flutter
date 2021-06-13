@@ -3,6 +3,7 @@ import 'package:flutter_shop/exceptions/exceptions.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+
 class Auth with ChangeNotifier{
   String token; //token will expire after a while
   DateTime expiry;  
@@ -23,7 +24,7 @@ class Auth with ChangeNotifier{
     } 
   }
   Future<void> _auth(String email,String password, String logOrSign) async{
-    final endPoint = "https://identitytoolkit.googleapis.com/v1/accounts:$logOrSign?key=AIzaSyCa2mPEg23ptNS7AWob5gpQNzFJRnZ-090";
+    final Uri endPoint = Uri.parse("https://identitytoolkit.googleapis.com/v1/accounts:$logOrSign?key=AIzaSyCa2mPEg23ptNS7AWob5gpQNzFJRnZ-090");
     try{
 
       final response = await http.post(endPoint,body: json.encode({
@@ -52,6 +53,16 @@ class Auth with ChangeNotifier{
     }
     
    
+  }
+
+  void logout(){
+    token = null;
+    expiry = null;
+    userId = null;
+    notifyListeners();
+  }
+
+  void _logoutTimer(){
   }
   Future<void> signUp(String email,String password) async{
     return _auth(email,password,"signUp");

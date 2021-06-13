@@ -12,7 +12,8 @@ import '../exceptions/exceptions.dart';
 
 class Products with ChangeNotifier {
   final String currentUserToken;
-  Products(this.currentUserToken,this._items);
+  final String userId;
+  Products(this.currentUserToken,this.userId, this._items);
   List<Product> _items = [
     /*
     Product(
@@ -89,8 +90,8 @@ class Products with ChangeNotifier {
   void updateItem(String id, Product newProduct) async {
     print("item updated");
 
-    final firebaseUrl =
-        "https://shopping-613a0-default-rtdb.firebaseio.com/products/$id.json?auth=$currentUserToken";
+    final Uri firebaseUrl = Uri.parse(
+        "https://shopping-613a0-default-rtdb.firebaseio.com/products/$id.json?auth=$currentUserToken");
 
     var indexToUpdate = _items.indexWhere((element) => element.id == id);
 
@@ -112,8 +113,8 @@ class Products with ChangeNotifier {
 
     var deletingElement = _items[itemIndex];
     _items.remove(deletingElement);
-    final firebaseUrl =
-        "https://shopping-613a0-default-rtdb.firebaseio.com/products/$id.json?auth=$currentUserToken";
+    final firebaseUrl = Uri.parse(
+        "https://shopping-613a0-default-rtdb.firebaseio.com/products/$id.json?auth=$currentUserToken");
 
     final response = await http.delete(firebaseUrl);
 
@@ -125,11 +126,12 @@ class Products with ChangeNotifier {
     deletingElement = null;
   }
 
-  Future<void> fetchProducts() async {
-    final fireBaseUrl =
-        "https://shopping-613a0-default-rtdb.firebaseio.com/products.json?auth=$currentUserToken";
+  Future<void> fetchProducts([bool filter = false]) async {
+    final filterArg = filter?'orderBy="itemOwnerId"&equalTo="$userId"':'';
+    final Uri fireBaseUrl = Uri.parse(
+        'https://shopping-613a0-default-rtdb.firebaseio.com/products.json?auth=$currentUserToken&$filterArg');
 
-        print("fetching data from firebase");
+    print("fetching data from firebase");
 
     final response = await http.get(fireBaseUrl);
     print(response.body);
@@ -154,9 +156,11 @@ class Products with ChangeNotifier {
 
   Future<void> addNewProduct(Product product) async {
     print(product);
-    
-    final firebaseUrl =
-        "https://shopping-613a0-default-rtdb.firebaseio.com/products.json?auth=$currentUserToken";
+
+    print("Adding new productt");
+
+    final Uri firebaseUrl = Uri.parse(
+        "https://shopping-613a0-default-rtdb.firebaseio.com/products.json?auth=$currentUserToken");
     try {
       final response = await http.post(firebaseUrl,
           body: json.encode({
@@ -164,7 +168,8 @@ class Products with ChangeNotifier {
             "description": product.description,
             "imageUrl": product.imageUrl,
             "price": product.price,
-            "favorite":product.favorite,
+            "favorite": product.favorite,
+            "itemOwnerId": userId
           }));
 
       print("product added lulw");
